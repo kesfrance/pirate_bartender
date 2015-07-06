@@ -27,81 +27,58 @@ ingredients = {
 
  
 def questionaire(questions_dict):
-    """ask few questions and return an answer dict"""
-    questlist = [i for i in questions_dict.values()]     
-    answerlist = []
-    answerdict = {}
-    #allow for review of selection before providing recipe
-    while True:
-        counter = len(questlist) #counter to track options
-        for i in range(len(questlist)):
-            print()
-            selection = "Type [y or yes], else hit Enter for more options: "
-            inp = input(questlist[i].upper()+ '\n' + selection)
-            for keys in questions_dict:
-                
-                if questions_dict.get(keys) ==questlist[i]:
-                    if inp.lower() in ['yes', 'y']:
-                        answerdict[keys] = True                        
-                    else:
-                        answerdict[keys] = False                                                             
-            counter -=1 
-            if counter == 0:                       
-               while True:
-                options = [keys for keys in answerdict if answerdict.get(keys)]
-                if len(options) > 1:
-                    option = ", ".join(options[:-1]) + " and " + options[-1]
-                else:
-                     option = ", ".join(options)
-
-                print()
-                # let client confirm his selections or non selection
-                if len(options) == 0:
-                    print("Options Exhausted. No selections made.\n")                                 
-                else:
-                    print("Hope I got you right. You like something "+ option+"?")
-                    print()                                
-                inp2 = input("Type (Any key+Enter) to Review or (Enter to continue): ")
-                                                      
-                if inp2:
-                    break
-                else:
-                    return answerdict
-      
-                     
+    """ask few questions and return an answer dict"""       
+    answerdict = {}                     
+    for keys, val in questions_dict.items():           
+        inp = input(val.upper() + " Type [yes or y]: ")                
+        if inp.lower() in ['yes', 'y']:                    
+             answerdict[keys] = True                                   
+    return answerdict                                                                         
+                             
            
 def constructdrink(answdict):
     """takes questionare dict and return recipe sugetions"""
     drinklist = []   
-    for val in [keys for keys in answdict if  answdict.get(keys)]:
-        drinklist.append(random.choice(ingredients[val]))
+    for keys, val in answdict.items():
+        if val==True:
+            drinklist.append(random.choice(ingredients[keys]))
     return drinklist
 
 def main():     
    """run the questionaire and constructdrink 
-   functions and return sugessions
+   functions and return recipe sugessions
    """
-   #allow for more drinks if so desired 
    while True:  
      print()
      print("Hi. Answer few questions and I will fix you something.!!")       
+     print()
      choices = constructdrink(questionaire(questions))
+     
+     #prompt user if no selection was made
      if len(choices) == 0:
          print()
-         print("Well. No selections, Bye for now!!")
+         print("No selection was made!!")
+         continue
+     
+     #else print out a recipe
      else:
+         print()
          print("One drink coming up....")
          print("It's full of good stuff.  The recipe is:")
          for flavors in choices:
              print("A {0}".format(flavors))                         
+        
+         #option for user to select more drinks or press enter to exit program
          while True:
-           inp3 = input("Hit (Any key+ENTER) for more options or (ENTER to quit): ")
-           if not inp3:
+           print()
+           inp2 = input("Hit (Any key+ENTER) for more drinks or (ENTER to quit): ")
+           if not inp2:
                print()
-               print("Bye for now. The Pirate Bartender. Always at your service !!.")
+               print("Bye for now!!.")
                sys.exit()
            else:
                break
                 
 if __name__=="__main__":
      main()
+     
